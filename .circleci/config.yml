@@ -10,11 +10,11 @@ jobs:
     steps:
       - checkout
       - run:
-         name: "Run tests"
-         command: go test -v ./...
+          name: "Run tests"
+          command: go test -v ./...
       - build:
-         name: "Build Docker image"
-         command: docker build -t hello-server:$CIRCLE_BRANCH .
+          name: "Build Docker image"
+          command: docker build -t hello-server:$CIRCLE_BRANCH .
 
   deploy_to_development:
     docker:
@@ -22,8 +22,8 @@ jobs:
     working_directory: /go/src/github.com/dmcclure/hello-server
     steps:
       - run:
-         name: "Deploy to development cluster"
-         command: echo TBD
+          name: "Deploy to development cluster"
+          command: echo TBD
 
 workflows:
   version: 2
@@ -31,10 +31,10 @@ workflows:
   development:
     jobs:
       - deploy_to_development:
-        requires: build
-        filters:
-          branches:
-            only: development
+          requires: build
+          filters:
+            branches:
+              only: development
 
   # staging:
   #   jobs:
