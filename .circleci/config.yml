@@ -41,7 +41,8 @@ workflows:
     jobs:
       - build
       - deploy_to_development:
-          requires: build
+          requires:
+            - build
           filters:
             branches:
               only: development
@@ -50,7 +51,8 @@ workflows:
     jobs:
       - build
       - deploy_to_staging:
-          requires: build
+          requires:
+            - build
           filters:
             branches:
               only: master
