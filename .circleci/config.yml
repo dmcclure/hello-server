@@ -14,12 +14,20 @@ jobs:
           command: go test -v ./...
       - setup_remote_docker
       - run:
-          name: "Build Docker image"
-          command: docker build -t hello-server:$CIRCLE_SHA1 .
-      - run:
-          name: "Push image to AWS ECR"
+          name: "Install AWS CLI"
           command: |
-            docker push "${ECR_ENDPOINT}/hello-server:${CIRCLE_SHA1}"
+            curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+            unzip awscli-bundle.zip
+            sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+      - run:
+          name: "Log in to AWS ECR"
+          command: eval $(aws ecr get-login)
+      - run:
+          name: "Build Docker image"
+          command: docker build -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/hello-server:$CIRCLE_SHA1 .
+      - run:
+          name: "Push Docker image to AWS ECR"
+          command: docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/hello-server:$CIRCLE_SHA1
 
   deploy_to_development:
     docker:
