@@ -12,15 +12,20 @@ jobs:
       - run:
           name: "Run tests"
           command: go test -v ./...
-      - setup_remote_docker:
-          docker_layer_caching: true
+      - setup_remote_docker
       - run:
           name: "Build Docker image"
-          command: docker build -t hello-server:$CIRCLE_BRANCH .
+          command: docker build -t hello-server:$CIRCLE_SHA1 .
+      - run:
+          name: "Push image to AWS ECR"
+          command: |
+#            login="$(aws ecr get-login)"
+#            ${login}
+            docker push "${ECR_ENDPOINT}/hello-server:${CIRCLE_SHA1}"
 
   deploy_to_development:
     docker:
-      - image: circleci/golang:1.9
+      - image: circleci/aws? golang:1.9
     working_directory: /go/src/github.com/dmcclure/hello-server
     steps:
       - run:
