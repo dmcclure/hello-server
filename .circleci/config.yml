@@ -19,8 +19,6 @@ jobs:
       - run:
           name: "Push image to AWS ECR"
           command: |
-#            login="$(aws ecr get-login)"
-#            ${login}
             docker push "${ECR_ENDPOINT}/hello-server:${CIRCLE_SHA1}"
 
   deploy_to_development:
