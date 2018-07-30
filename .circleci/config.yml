@@ -34,10 +34,19 @@ jobs:
           name: "Deploy to staging"
           command: echo TBD
 
+  deploy_to_production:
+    docker:
+      - image: circleci/golang:1.9
+    working_directory: /go/src/github.com/dmcclure/hello-server
+    steps:
+      - run:
+          name: "Deploy to production"
+          command: echo TBD
+
 workflows:
   version: 2
 
-  development:
+  build_and_deploy:
     jobs:
       - build
       - deploy_to_development:
@@ -45,18 +54,17 @@ workflows:
             - build
           filters:
             branches:
-              only: development
-
-  staging:
-    jobs:
-      - build
+              only: develop
       - deploy_to_staging:
           requires:
             - build
           filters:
             branches:
               only: master
-
-  # production:
-  #   jobs:
-  #     - deploy_to_production:
+      - hold:
+          type: approval
+          requires:
+           - deploy_to_staging
+      - deploy_to_production:
+          requires:
+            - hold
