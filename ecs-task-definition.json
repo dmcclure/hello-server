@@ -1,0 +1,37 @@
+{
+  "family": "hello-server-$ENV_NAME",
+  "cpu": "256",
+  "memory": "512",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "taskRoleArn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/hello-server-task-role-$ENV_NAME",
+  "executionRoleArn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/hello-server-execution-role-$ENV_NAME",
+  "networkMode": "awsvpc",
+  "containerDefinitions": [{
+    "name": "hello-server",
+    "image": "$AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/hello-server:$CIRCLE_SHA1",
+    "portMappings": [{
+      "hostPort": 9090,
+      "protocol": "tcp",
+      "containerPort": 9090
+    }],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "/ecs/hello-server-$ENV_NAME",
+        "awslogs-region": "$AWS_REGION",
+        "awslogs-stream-prefix": "ecs"
+      }
+    },
+    "environment": [{
+        "name": "ENV_NAME",
+        "value": "$ENV_NAME"
+      },
+      {
+        "name": "DATABASE_DSN",
+        "value": "$DATABASE_DSN"
+      }
+    ]
+  }]
+}

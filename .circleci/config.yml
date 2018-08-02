@@ -21,35 +21,49 @@ jobs:
             sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
       - run:
           name: "Log in to AWS ECR"
-          command: eval $(aws ecr get-login)
+          command: eval $(aws ecr get-login --no-include-email --region us-east-1)
       - run:
           name: "Build Docker image"
           command: docker build -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/hello-server:$CIRCLE_SHA1 .
-      - run:
-          name: "Push Docker image to AWS ECR"
-          command: docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/hello-server:$CIRCLE_SHA1
+      # - run:
+      #     name: "Push Docker image to AWS ECR"
+      #     command: docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/hello-server:$CIRCLE_SHA1
 
   deploy_to_development:
     docker:
-      - image: circleci/aws? golang:1.9
+      - image: wilson208/circleci-awscli
     working_directory: /go/src/github.com/dmcclure/hello-server
     steps:
       - run:
           name: "Deploy to development"
-          command: echo TBD
+          environment:
+            ENV_NAME: development
+            AWS_REGION: us-east-1
+            DB_DSN: $DATABASE_DSN
+          command: |
+            envsubst < "ecs-task-definitions.json" > "ecs-task-development.json"
+            echo ECS UPDATE TBD
+            cat ecs-task-development.json
 
   deploy_to_staging:
     docker:
-      - image: circleci/golang:1.9
+      - image: wilson208/circleci-awscli
     working_directory: /go/src/github.com/dmcclure/hello-server
     steps:
       - run:
           name: "Deploy to staging"
-          command: echo TBD
+          environment:
+            ENV_NAME: staging
+            AWS_REGION: us-east-1
+            DB_DSN: $DATABASE_DSN
+          command: |
+            envsubst < "ecs-task-definitions.json" > "ecs-task-development.json"
+            echo ECS UPDATE TBD
+            cat ecs-task-development.json
 
   deploy_to_production:
     docker:
-      - image: circleci/golang:1.9
+      - image: wilson208/circleci-awscli
     working_directory: /go/src/github.com/dmcclure/hello-server
     steps:
       - run:
