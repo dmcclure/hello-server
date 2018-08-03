@@ -108,6 +108,8 @@ workflows:
           requires:
            - deploy_to_staging
           filters:
+            branches:
+              ignore: /.*/
             tags:
               only: /^v\d+.\d+.\d+$/
       - deploy_to_production:
