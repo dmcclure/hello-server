@@ -47,7 +47,7 @@ jobs:
             AWS_REGION: us-east-1
             DB_DSN: $DATABASE_DSN
           command: |
-            envsubst < "ecs-task-definitions.json" > "ecs-task-development.json"
+            envsubst < "ecs-task-definition.json" > "ecs-task-development.json"
             echo ECS UPDATE TBD
             cat ecs-task-development.json
 
@@ -65,9 +65,9 @@ jobs:
             AWS_REGION: us-east-1
             DB_DSN: $DATABASE_DSN
           command: |
-            envsubst < "ecs-task-definitions.json" > "ecs-task-development.json"
+            envsubst < "ecs-task-definition.json" > "ecs-task-staging.json"
             echo ECS UPDATE TBD
-            cat ecs-task-development.json
+            cat ecs-task-staging.json
 
   deploy_to_production:
     docker:
