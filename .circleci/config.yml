@@ -9,13 +9,8 @@
 #   1. Build
 #   2. Run the tests
 #   3. Deploy the app to the staging AWS ECS cluster
-#
-# Any tag pushed to the "master" branch with the format "v1.2.3" will:
-#   1. Build
-#   2. Run the tests
-#   3. Deploy the app to the staging AWS ECS cluster
 #   4. Wait for a manual approval to proceed
-#   3. Deploy the app to the production AWS ECS cluster
+#   5. Deploy the app to the production AWS ECS cluster
 version: 2
 jobs:
   build:
@@ -122,11 +117,6 @@ workflows:
           type: approval
           requires:
            - deploy_to_staging
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v\d+.\d+.\d+$/
       - deploy_to_production:
           requires:
             - hold
