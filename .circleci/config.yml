@@ -1,6 +1,21 @@
-# Golang CircleCI 2.0 configuration file
+# CircleCI 2.0 configuration file
 #
-# Check https://circleci.com/docs/2.0/language-go/ for more details
+# Any commit to the "develop" branch will:
+#   1. Build
+#   2. Run the tests
+#   3. Deploy the app to the development AWS ECS cluster
+#
+# Any commit to the "master" branch will:
+#   1. Build
+#   2. Run the tests
+#   3. Deploy the app to the staging AWS ECS cluster
+#
+# Any tag pushed to the "master" branch will:
+#   1. Build
+#   2. Run the tests
+#   3. Deploy the app to the staging AWS ECS cluster
+#   4. Wait for a manual approval to proceed
+#   3. Deploy the app to the production AWS ECS cluster
 version: 2
 jobs:
   build:
