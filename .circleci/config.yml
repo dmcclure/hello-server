@@ -10,7 +10,7 @@
 #   2. Run the tests
 #   3. Deploy the app to the staging AWS ECS cluster
 #
-# Any tag pushed to the "master" branch will:
+# Any tag pushed to the "master" branch with the format "v1.2.3" will:
 #   1. Build
 #   2. Run the tests
 #   3. Deploy the app to the staging AWS ECS cluster
