@@ -1,0 +1,38 @@
+language: go
+
+go:
+  - 1.8
+
+branches:
+  only:
+    - develop
+    - master
+
+env:
+  global:
+    - AWS_ACCOUNT_ID: 960785399995
+    - AWS_REGION: us-east-1
+
+build:
+  ci:
+    - go test -v ./...
+    - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/hello-server:$COMMIT .
+
+# post_ci:
+    # - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/hello-server:$COMMIT
+
+# integrations:
+  # hub:
+  #   - integrationName: aws-keys-integration
+  #     region: $AWS_REGION
+  #     type: ecr
+
+  notifications:
+    - integrationName: email
+      type: email
+      on_success: change
+      on_failure: always
+      on_pull_request: never
+      sendFailingSnippet: true
+      recipients:
+        - dmcclure@redventures.com
