@@ -6,12 +6,15 @@ jobs:
   build:
     docker:
       - image: circleci/golang:1.9
-    working_directory: /go/src/github.com/dmcclure/hello-server
+    # working_directory: /go/src/github.com/dmcclure/hello-server
     steps:
       - checkout
       - run:
           name: "Run tests"
           command: go test -v ./...
+      - persist_to_workspace:
+          root: .
+          paths: .
       - setup_remote_docker
       - run:
           name: "Install AWS CLI"
@@ -33,8 +36,10 @@ jobs:
   deploy_to_development:
     docker:
       - image: wilson208/circleci-awscli
-    working_directory: /go/src/github.com/dmcclure/hello-server
+    # working_directory: /go/src/github.com/dmcclure/hello-server
     steps:
+      - attach_workspace:
+          at: .
       - run:
           name: "Deploy to development"
           environment:
@@ -49,8 +54,10 @@ jobs:
   deploy_to_staging:
     docker:
       - image: wilson208/circleci-awscli
-    working_directory: /go/src/github.com/dmcclure/hello-server
+    # working_directory: /go/src/github.com/dmcclure/hello-server
     steps:
+      - attach_workspace:
+          at: .
       - run:
           name: "Deploy to staging"
           environment:
@@ -65,8 +72,10 @@ jobs:
   deploy_to_production:
     docker:
       - image: wilson208/circleci-awscli
-    working_directory: /go/src/github.com/dmcclure/hello-server
+    # working_directory: /go/src/github.com/dmcclure/hello-server
     steps:
+      - attach_workspace:
+          at: .
       - run:
           name: "Deploy to production"
           command: echo TBD
