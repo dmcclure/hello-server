@@ -15,7 +15,12 @@ env:
 
 build:
   ci:
-    - go test -v ./...
+    # Run our tests
+    - mkdir -p shippable/testresults
+    - go get github.com/jstemmer/go-junit-report
+    - go test -v ./... | tee test.out
+    - cat test.out | go-junit-report > shippable/testresults/report.xml
+    # Build our Docker image
     - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/hello-server:$COMMIT .
 
 # post_ci:
