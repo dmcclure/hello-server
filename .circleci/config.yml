@@ -107,6 +107,9 @@ workflows:
           type: approval
           requires:
            - deploy_to_staging
+          filters:
+            tags:
+              only: /^v\d+.\d+.\d+$/
       - deploy_to_production:
           requires:
             - hold
