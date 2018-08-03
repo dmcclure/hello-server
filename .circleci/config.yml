@@ -6,7 +6,6 @@ jobs:
   build:
     docker:
       - image: circleci/golang:1.9
-    # working_directory: /go/src/github.com/dmcclure/hello-server
     steps:
       - checkout
       - run:
@@ -36,10 +35,12 @@ jobs:
   deploy_to_development:
     docker:
       - image: wilson208/circleci-awscli
-    # working_directory: /go/src/github.com/dmcclure/hello-server
     steps:
       - attach_workspace:
           at: .
+      - run:
+          name: "Install envsubst"
+          command: apt-get install envsubst
       - run:
           name: "Deploy to development"
           environment:
@@ -54,10 +55,12 @@ jobs:
   deploy_to_staging:
     docker:
       - image: wilson208/circleci-awscli
-    # working_directory: /go/src/github.com/dmcclure/hello-server
     steps:
       - attach_workspace:
           at: .
+      - run:
+          name: "Install envsubst"
+          command: apt-get install envsubst
       - run:
           name: "Deploy to staging"
           environment:
@@ -72,10 +75,12 @@ jobs:
   deploy_to_production:
     docker:
       - image: wilson208/circleci-awscli
-    # working_directory: /go/src/github.com/dmcclure/hello-server
     steps:
       - attach_workspace:
           at: .
+      - run:
+          name: "Install envsubst"
+          command: apt-get install envsubst
       - run:
           name: "Deploy to production"
           command: echo TBD
