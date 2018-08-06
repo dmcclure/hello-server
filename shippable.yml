@@ -35,7 +35,7 @@ build:
   notifications:
     - integrationName: email
       type: email
-      on_success: change
+      on_success: always
       on_failure: always
       on_pull_request: never
       sendFailingSnippet: true
