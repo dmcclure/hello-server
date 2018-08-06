@@ -10,7 +10,7 @@
   "networkMode": "awsvpc",
   "containerDefinitions": [{
     "name": "hello-server",
-    "image": "$AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/hello-server:$CIRCLE_SHA1",
+    "image": "$REPOSITORY_URI:$IMAGE_TAG",
     "portMappings": [{
       "hostPort": 9090,
       "protocol": "tcp",

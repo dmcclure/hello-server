@@ -1,0 +1,30 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws --version
+      - $(aws ecr get-login --region us-east-1 --no-include-email)
+      - REPOSITORY_URI=960785399995.dkr.ecr.us-east-1.amazonaws.com/hello-server
+      - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - docker build -t $REPOSITORY_URI:$IMAGE_TAG .
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - echo Writing ECS task definition file...
+      - AWS_REGION=us-east-1
+      - AWS_ACCOUNT_ID=960785399995
+      - ENV_NAME=development
+      - AWS_REGION=us-east-1
+      - DB_DSN=$DATABASE_DSN
+      - envsubst < ecs-task-definition.json > ecs-task-$ENV_NAME.json
+      # - printf '[{"name":"hello-world","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > ecs-task-definition.json
+artifacts:
+    files: ecs-task-$ENV_NAME.json
