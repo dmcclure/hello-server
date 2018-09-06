@@ -2,9 +2,9 @@ version: 0.2
 
 env:
   variables:
-    AWS_REGION: "us-east-1"
+    AWS_REGION: "us-west-1"
     AWS_ACCOUNT_ID: "960785399995"
-    REPOSITORY_URI: "960785399995.dkr.ecr.us-east-1.amazonaws.com/hello-server"
+    REPOSITORY_URI: "960785399995.dkr.ecr.us-west-1.amazonaws.com/hello-server"
 
 phases:
   install:
