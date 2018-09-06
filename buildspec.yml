@@ -15,11 +15,12 @@ phases:
 
   pre_build:
     commands:
-      - echo Obtaining git branch name...
-      - BRANCH=$(git branch -a --contains $CODEBUILD_RESOLVED_SOURCE_VERSION)
-      - if [ "$BRANCH" != "test" ] && [ "$BRANCH" != "master" ]; then exit 1; fi
-      - echo Branch is $BRANCH
-      - IMAGE_TAG=$BRANCH-$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      # - echo Obtaining git branch name...
+      # - BRANCH=$(git branch -a --contains $CODEBUILD_RESOLVED_SOURCE_VERSION)
+      # - if [ "$BRANCH" != "test" ] && [ "$BRANCH" != "master" ]; then exit 1; fi
+      # - echo Branch is $BRANCH
+      # - IMAGE_TAG=$BRANCH-$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - echo Running tests...
       - ENV_NAME=test go test -v ./...
   build:
@@ -37,7 +38,7 @@ phases:
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Writing ECS task definition file(s)...
       - |
-        if [ "$BRANCH" == "test" ]
+        if [ "$ENV_NAME" == "test" ]
         then
           ENV_NAME=test envsubst < ecs-task-definition.json > ecs-task-test.json
         else

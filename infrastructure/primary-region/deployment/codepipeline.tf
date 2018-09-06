@@ -100,7 +100,7 @@ resource "aws_codepipeline" "test" {
       version          = "1"
 
       configuration {
-        ProjectName = "hello-server"
+        ProjectName = "hello-server-test"
       }
     }
   }
