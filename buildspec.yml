@@ -5,8 +5,6 @@ env:
     AWS_REGION: "us-east-1"
     AWS_ACCOUNT_ID: "960785399995"
     REPOSITORY_URI: "960785399995.dkr.ecr.us-east-1.amazonaws.com/hello-server"
-  parameter-store:
-    DB_DSN: "databaseDsn"
 
 phases:
   install:
