@@ -83,9 +83,9 @@ EOF
 }
 
 resource "aws_codebuild_project" "test" {
-  name         = "hello-server-test"
-  description  = "Builds a hello-server Docker image for the test environment"
-  build_timeout      = "30"
+  name = "hello-server-test"
+  description = "Builds a hello-server Docker image for the test environment"
+  build_timeout = "30"
   service_role = "${aws_iam_role.codebuild.arn}"
 
   artifacts {
@@ -94,11 +94,12 @@ resource "aws_codebuild_project" "test" {
 
   environment {
     compute_type = "BUILD_GENERAL1_SMALL"
-    image        = "aws/codebuild/golang:1.10"
-    type         = "LINUX_CONTAINER"
+    image = "aws/codebuild/golang:1.10"
+    type = "LINUX_CONTAINER"
+    privileged_mode = true
 
     environment_variable {
-      "name"  = "ENV_NAME"
+      "name" = "ENV_NAME"
       "value" = "test"
     }
   }
