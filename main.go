@@ -2,13 +2,14 @@ package main
 
 import (
 	"net/http"
+	"os"
 	"strings"
 )
 
 func sayHelloHandler(w http.ResponseWriter, r *http.Request) {
 	message := r.URL.Path
 	message = strings.TrimPrefix(message, "/")
-	message = "Hello " + message
+	message = "Hello " + message + " from " + os.Getenv("ENV_NAME")
 	w.Write([]byte(message))
 }
 

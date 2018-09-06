@@ -1,5 +1,5 @@
 {
-  "family": "hello-server-$ENV_NAME",
+  "family": "hello-server-test",
   "cpu": "256",
   "memory": "512",
   "requiresCompatibilities": [

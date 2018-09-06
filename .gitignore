@@ -1,2 +1,9 @@
 .vscode
 debug
+
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+*.tfvars
