@@ -46,7 +46,8 @@ resource "aws_iam_role_policy" "codebuild" {
         "ecr:InitiateLayerUpload",
         "ecr:UploadLayerPart",
         "ecr:CompleteLayerUpload",
-        "ecr:PutImage"
+        "ecr:PutImage",
+        "ssm:GetParameters"
       ]
     }
   ]

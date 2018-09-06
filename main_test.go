@@ -20,7 +20,7 @@ func TestServer(t *testing.T) {
 		t.Fatalf("Received non-200 response code: %d\n", resp.Code)
 	}
 
-	expected := "Hello TestName"
+	expected := "Hello TestName! ENV_NAME: test"
 	if resp.Body.String() != expected {
 		t.Errorf("Expected: '%s' but received: '%s'\n", expected, resp.Body.String())
 	}

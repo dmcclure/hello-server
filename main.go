@@ -9,7 +9,7 @@ import (
 func sayHelloHandler(w http.ResponseWriter, r *http.Request) {
 	message := r.URL.Path
 	message = strings.TrimPrefix(message, "/")
-	message = "Hello " + message + " from " + os.Getenv("ENV_NAME")
+	message = "Hello " + message + "! ENV_NAME: " + os.Getenv("ENV_NAME")
 	w.Write([]byte(message))
 }
 
