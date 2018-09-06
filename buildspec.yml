@@ -12,9 +12,6 @@ phases:
       # Setup an "ok" shell script we can use to check whether the build was a success
       - printf '#!/bin/bash\nif [[ "$CODEBUILD_BUILD_SUCCEEDING" == "0" ]]; then exit 1; fi' > /usr/local/bin/ok
       - chmod +x /usr/local/bin/ok
-      # Start the Docker daemon
-      - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay&
-      - timeout -t 15 sh -c "until docker info; do echo .; sleep 1; done"
 
   pre_build:
     commands:
