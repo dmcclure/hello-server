@@ -123,7 +123,7 @@ resource "aws_codepipeline" "test" {
 
       configuration {
         ClusterName = "hello-server-test"
-        ServiceName = "hello-server-service-test"
+        ServiceName = "hello-server-test"
         FileName    = "imagedefinitions.json"
       }
     }
