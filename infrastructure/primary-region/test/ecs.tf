@@ -47,7 +47,7 @@ data "aws_ssm_parameter" "database_dsn" {
 }
 
 resource "aws_ecs_task_definition" "app" {
-  family                   = "hello-server-task-${var.environment}"
+  family                   = "hello-server-${var.environment}"
   execution_role_arn       = "${aws_iam_role.ecs_task_execution.arn}"
   task_role_arn            = "${aws_iam_role.ecs_task.arn}"
   network_mode             = "awsvpc"
@@ -89,7 +89,7 @@ DEFINITION
 }
 
 resource "aws_ecs_service" "main" {
-  name            = "hello-server-service-${var.environment}"
+  name            = "hello-server-${var.environment}"
   cluster         = "${aws_ecs_cluster.main.id}"
   task_definition = "${aws_ecs_task_definition.app.arn}"
 
@@ -107,7 +107,7 @@ resource "aws_ecs_service" "main" {
 
   load_balancer {
     target_group_arn = "${aws_lb_target_group.app.id}"
-    container_name   = "hello-server-${var.environment}"
+    container_name   = "hello-server"
     container_port   = "9090"
   }
 

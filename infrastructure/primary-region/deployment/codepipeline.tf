@@ -38,8 +38,13 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
         "codedeploy:GetDeploymentConfig",
         "codedeploy:RegisterApplicationRevision",
         "codebuild:BatchGetBuilds",
-        "codebuild:StartBuild"
-      ],
+        "codebuild:StartBuild",
+        "ecs:DescribeServices",
+        "ecs:DescribeTaskDefinition",
+        "ecs:DescribeTasks",
+        "ecs:ListTasks",
+        "ecs:RegisterTaskDefinition",
+        "ecs:UpdateService"      ],
       "Resource": "*",
       "Effect": "Allow"
     }
