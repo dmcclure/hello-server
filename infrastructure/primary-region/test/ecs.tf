@@ -57,7 +57,7 @@ resource "aws_ecs_task_definition" "app" {
   container_definitions = <<DEFINITION
 [
   {
-    "name": "hello-server-${var.environment}",
+    "name": "hello-server",
     "image": "hello-server:${var.environment}",
     "cpu": 256,
     "memory": 512,

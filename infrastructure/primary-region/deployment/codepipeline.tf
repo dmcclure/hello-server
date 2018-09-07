@@ -23,28 +23,28 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
 
   policy = <<EOF
 {
-    "Statement": [
-        {
-            "Action": [
-                "s3:GetObject",
-                "s3:GetObjectVersion",
-                "s3:GetBucketVersioning",
-                "s3:PutObject",
-                "iam:PassRole",
-                "codepipeline:*",
-                "codedeploy:CreateDeployment",
-                "codedeploy:GetApplicationRevision",
-                "codedeploy:GetDeployment",
-                "codedeploy:GetDeploymentConfig",
-                "codedeploy:RegisterApplicationRevision",
-                "codebuild:BatchGetBuilds",
-                "codebuild:StartBuild"
-            ],
-            "Resource": "*",
-            "Effect": "Allow"
-        }
-    ],
-    "Version": "2012-10-17"
+  "Statement": [
+    {
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion",
+        "s3:GetBucketVersioning",
+        "s3:PutObject",
+        "iam:PassRole",
+        "codepipeline:*",
+        "codedeploy:CreateDeployment",
+        "codedeploy:GetApplicationRevision",
+        "codedeploy:GetDeployment",
+        "codedeploy:GetDeploymentConfig",
+        "codedeploy:RegisterApplicationRevision",
+        "codebuild:BatchGetBuilds",
+        "codebuild:StartBuild"
+      ],
+      "Resource": "*",
+      "Effect": "Allow"
+    }
+  ],
+  "Version": "2012-10-17"
 }
 EOF
 }
@@ -59,12 +59,12 @@ resource "aws_s3_bucket" "codepipeline_artifacts" {
 }
 
 resource "aws_codepipeline" "test" {
-  name     = "hello-server-test"
+  name = "hello-server-test"
   role_arn = "${aws_iam_role.codepipeline_role.arn}"
 
   artifact_store {
     location = "${aws_s3_bucket.codepipeline_artifacts.bucket}"
-    type     = "S3"
+    type = "S3"
   }
 
   stage {
@@ -91,7 +91,7 @@ resource "aws_codepipeline" "test" {
     name = "Build"
 
     action {
-      name             = "build"
+      name             = "build-and-test"
       category         = "Build"
       owner            = "AWS"
       provider         = "CodeBuild"
@@ -112,15 +112,14 @@ resource "aws_codepipeline" "test" {
       name            = "deploy"
       category        = "Deploy"
       owner           = "AWS"
-      provider        = "CodeDeploy"
+      provider        = "ECS"
       input_artifacts = ["image-definition"]
       version         = "1"
 
       configuration {
-        ApplicationName     = "hello-server-test"
-        DeploymentGroupName = "hello-server-test"
-        # ApplicationName     = "${data.terraform_remote_state.codedeploy.application-name}"
-        # DeploymentGroupName = "${data.terraform_remote_state.codedeploy.deployment-group-name}"
+        ClusterName = "hello-server-test"
+        ServiceName = "hello-server-service-test"
+        FileName    = "imagedefinitions.json"
       }
     }
   }

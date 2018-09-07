@@ -32,7 +32,7 @@ phases:
       - echo Pushing the Docker image...
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Writing image definition file...
-      - echo $REPOSITORY_URI:$IMAGE_TAG > image-definition
+      - printf '[{"name":"hello-server","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
 artifacts:
-    files: image-definition
+    files: imagedefinitions.json
     discard-paths: yes
