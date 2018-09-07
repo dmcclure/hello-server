@@ -54,7 +54,7 @@ data "aws_ssm_parameter" "github_token" {
 }
 
 resource "aws_s3_bucket" "codepipeline_artifacts" {
-    bucket = "hello-server-codepipeline-artifacts"
+    bucket = "hello-server-codepipeline-artifacts-test"
     acl    = "private"
 }
 
@@ -76,7 +76,7 @@ resource "aws_codepipeline" "test" {
       owner            = "ThirdParty"
       provider         = "GitHub"
       version          = "1"
-      output_artifacts = ["source-test"]
+      output_artifacts = ["source"]
 
       configuration {
         OAuthToken = "${data.aws_ssm_parameter.github_token.value}"
@@ -95,8 +95,8 @@ resource "aws_codepipeline" "test" {
       category         = "Build"
       owner            = "AWS"
       provider         = "CodeBuild"
-      input_artifacts  = ["source-test"]
-      output_artifacts = ["build-output-test"]
+      input_artifacts  = ["source"]
+      output_artifacts = ["image-definition"]
       version          = "1"
 
       configuration {
@@ -113,7 +113,7 @@ resource "aws_codepipeline" "test" {
       category        = "Deploy"
       owner           = "AWS"
       provider        = "CodeDeploy"
-      input_artifacts = ["build-output-test"]
+      input_artifacts = ["image-definition"]
       version         = "1"
 
       configuration {
