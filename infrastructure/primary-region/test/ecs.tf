@@ -61,6 +61,7 @@ resource "aws_ecs_task_definition" "app" {
     "image": "hello-server:${var.environment}",
     "cpu": 256,
     "memory": 512,
+    "networkMode": "awsvpc",
     "portMappings": [{
       "hostPort": 9090,
       "protocol": "tcp",
@@ -112,8 +113,7 @@ resource "aws_ecs_service" "main" {
   }
 
   depends_on = [
-    "aws_lb_listener.app",
-    "aws_ecs_task_definition.app"
+    "aws_lb_listener.app"
   ]
 }
 
