@@ -3,7 +3,7 @@ terraform {
   backend "s3" {
     bucket = "hello-server-terraform-artifacts"
     key    = "test/terraform.tfstate"
-    region = "us-west-1"
+    region = "us-west-2"
   }
 
   provider "aws" {

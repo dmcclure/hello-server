@@ -1,6 +1,6 @@
 variable "aws_region" {
   description = "The region where AWS operations will take place"
-  default     = "us-west-1"
+  default     = "us-west-2"
 }
 
 variable "az_count" {

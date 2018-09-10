@@ -93,6 +93,7 @@ resource "aws_ecs_service" "main" {
   name            = "hello-server-${var.environment}"
   cluster         = "${aws_ecs_cluster.main.id}"
   task_definition = "${aws_ecs_task_definition.app.arn}"
+  launch_type     = "FARGATE"
 
   # Create the service with a desired count of 2, but allow external changes to this number.
   # Autoscaling may alter this number, and we don't want this to cause a Terraform plan difference.

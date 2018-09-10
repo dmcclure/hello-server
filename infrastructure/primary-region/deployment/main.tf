@@ -3,13 +3,13 @@ terraform {
   backend "s3" {
     bucket = "hello-server-terraform-artifacts"
     key    = "deployment/terraform.tfstate"
-    region = "us-west-1"
+    region = "us-west-2"
   }
 
   provider "aws" {
     version = "~> 1.35"
     shared_credentials_file = "$HOME/.aws/credentials"
     profile = "default"
-    region = "us-west-1"
+    region = "us-west-2"
   }
 }
