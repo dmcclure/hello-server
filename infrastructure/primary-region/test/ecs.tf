@@ -94,12 +94,12 @@ resource "aws_ecs_service" "main" {
   cluster         = "${aws_ecs_cluster.main.id}"
   task_definition = "${aws_ecs_task_definition.app.arn}"
   launch_type     = "FARGATE"
-
-  # Create the service with a desired count of 2, but allow external changes to this number.
-  # Autoscaling may alter this number, and we don't want this to cause a Terraform plan difference.
   desired_count = 2
+
+  # We allow external changes to desired_count because autoscaling may alter this number.
+  # We allow external changes to task_definition because deployments to the cluster will alter this value.
   lifecycle {
-    ignore_changes = ["desired_count"]
+    ignore_changes = ["desired_count", "task_definition"]
   }
 
   network_configuration {
