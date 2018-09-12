@@ -37,12 +37,14 @@
 5. Store app configuration data in parameter store. There will be a separate set of config for each environment (test, staging and production)
 
    ```bash
-   aws ssm put-parameter --region us-west-2 --name "/hello-server/test/database_dsn" --value "DATABASE_DSN_HERE" --type "SecureString"
+   aws ssm put-parameter --region us-west-2 --name "/hello-server/test/database_dsn" --value "TEST_DATABASE_DSN_HERE" --type "SecureString"
+   aws ssm put-parameter --region us-west-2 --name "/hello-server/staging/database_dsn" --value "STAGING_DATABASE_DSN_HERE" --type "SecureString"
+   aws ssm put-parameter --region us-west-2 --name "/hello-server/production/database_dsn" --value "PRODUCTION_DATABASE_DSN_HERE" --type "SecureString"
    ```
 
 6. Run `terraform init` and `AWS_DEFAULT_REGION='us-west-2' terraform apply` in each environment directory (`primary-region/test`, `primary-region/staging` and `primary-region/production`).
 
-7. Run terraform in the `primary-region/deployment` directory.
+7. Run `terraform init` and `AWS_DEFAULT_REGION='us-west-2' terraform apply` in the `primary-region/deployment` directory.
 
 ## Setting up infrastructure in a secondary AWS region
 

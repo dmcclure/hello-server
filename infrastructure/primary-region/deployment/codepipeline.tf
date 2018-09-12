@@ -58,7 +58,7 @@ data "aws_ssm_parameter" "github_token" {
   name = "/hello-server/github_token"
 }
 
-resource "aws_s3_bucket" "codepipeline_artifacts" {
+resource "aws_s3_bucket" "codepipeline_artifacts_test" {
     bucket = "hello-server-codepipeline-artifacts-test"
     acl    = "private"
 }
@@ -68,7 +68,7 @@ resource "aws_codepipeline" "test" {
   role_arn = "${aws_iam_role.codepipeline_role.arn}"
 
   artifact_store {
-    location = "${aws_s3_bucket.codepipeline_artifacts.bucket}"
+    location = "${aws_s3_bucket.codepipeline_artifacts_test.bucket}"
     type = "S3"
   }
 
@@ -105,7 +105,7 @@ resource "aws_codepipeline" "test" {
       version          = "1"
 
       configuration {
-        ProjectName = "hello-server-test"
+        ProjectName = "hello-server"
       }
     }
   }
@@ -124,6 +124,78 @@ resource "aws_codepipeline" "test" {
       configuration {
         ClusterName = "hello-server-test"
         ServiceName = "hello-server-test"
+        FileName    = "imagedefinitions.json"
+      }
+    }
+  }
+}
+
+resource "aws_s3_bucket" "codepipeline_artifacts_master" {
+    bucket = "hello-server-codepipeline-artifacts-master"
+    acl    = "private"
+}
+
+resource "aws_codepipeline" "master" {
+  name = "hello-server-master"
+  role_arn = "${aws_iam_role.codepipeline_role.arn}"
+
+  artifact_store {
+    location = "${aws_s3_bucket.codepipeline_artifacts_master.bucket}"
+    type = "S3"
+  }
+
+  stage {
+    name = "Source"
+
+    action {
+      name             = "github-checkout"
+      category         = "Source"
+      owner            = "ThirdParty"
+      provider         = "GitHub"
+      version          = "1"
+      output_artifacts = ["source"]
+
+      configuration {
+        OAuthToken = "${data.aws_ssm_parameter.github_token.value}"
+        Owner      = "dmcclure"
+        Repo       = "hello-server"
+        Branch     = "master"
+      }
+    }
+  }
+
+  stage {
+    name = "Build"
+
+    action {
+      name             = "build-and-test"
+      category         = "Build"
+      owner            = "AWS"
+      provider         = "CodeBuild"
+      input_artifacts  = ["source"]
+      output_artifacts = ["image-definition"]
+      version          = "1"
+
+      configuration {
+        ProjectName = "hello-server"
+      }
+    }
+  }
+
+  stage {
+    name = "Deploy"
+
+    action {
+      name            = "deploy"
+      category        = "Deploy"
+      owner           = "AWS"
+      provider        = "ECS"
+      input_artifacts = ["image-definition"]
+      version         = "1"
+
+      configuration {
+        ClusterName = "hello-server-staging"
+        ServiceName = "hello-server-staging"
         FileName    = "imagedefinitions.json"
       }
     }
