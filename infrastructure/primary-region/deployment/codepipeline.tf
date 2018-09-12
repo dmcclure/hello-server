@@ -183,7 +183,7 @@ resource "aws_codepipeline" "master" {
   }
 
   stage {
-    name = "Deploy"
+    name = "Staging-Deploy"
 
     action {
       name            = "deploy"
@@ -196,6 +196,41 @@ resource "aws_codepipeline" "master" {
       configuration {
         ClusterName = "hello-server-staging"
         ServiceName = "hello-server-staging"
+        FileName    = "imagedefinitions.json"
+      }
+    }
+  }
+
+  stage {
+    name = "Approval"
+
+    action {
+      name            = "approval"
+      category        = "Approval"
+      owner           = "AWS"
+      provider        = "Manual"
+      version         = "1"
+
+      configuration {
+        # "NotificationArn": "arn:aws:sns:us-west-2:80398EXAMPLE:MyApprovalTopic"
+      }
+    }
+  }
+
+  stage {
+    name = "Production-Deploy"
+
+    action {
+      name            = "deploy"
+      category        = "Deploy"
+      owner           = "AWS"
+      provider        = "ECS"
+      input_artifacts = ["image-definition"]
+      version         = "1"
+
+      configuration {
+        ClusterName = "hello-server-production"
+        ServiceName = "hello-server-production"
         FileName    = "imagedefinitions.json"
       }
     }
