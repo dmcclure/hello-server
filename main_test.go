@@ -10,7 +10,7 @@ import (
 func TestServer(t *testing.T) {
 	os.Setenv("IMAGE_TAG", "abcdefg")
 
-	req, err := http.NewRequest("GET", "/TestName", nil)
+	req, err := http.NewRequest("GET", "/hello/TestName", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
