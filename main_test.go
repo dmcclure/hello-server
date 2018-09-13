@@ -16,7 +16,7 @@ func TestServer(t *testing.T) {
 	}
 
 	resp := httptest.NewRecorder()
-	handler := http.HandlerFunc(sayHelloHandler)
+	handler := http.HandlerFunc(helloHandler)
 	handler.ServeHTTP(resp, req)
 
 	if resp.Code != http.StatusOK {
