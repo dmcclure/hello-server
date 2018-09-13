@@ -9,7 +9,11 @@ import (
 	"time"
 )
 
-func sayHelloHandler(w http.ResponseWriter, r *http.Request) {
+func healthHandler(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("OK"))
+}
+
+func helloHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Handling request to " + r.URL.RequestURI())
 
 	message := r.URL.Path
@@ -43,7 +47,8 @@ func loadHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/hello/", sayHelloHandler)
+	http.HandleFunc("/health", healthHandler)
+	http.HandleFunc("/hello/", helloHandler)
 	http.HandleFunc("/load", loadHandler)
 
 	fmt.Println("hello-server starting. IMAGE_TAG=" + os.Getenv("IMAGE_TAG") + " ENV_NAME=" + os.Getenv("ENV_NAME") + " BUILD_DATE=" + os.Getenv("BUILD_DATE"))
