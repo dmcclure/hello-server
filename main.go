@@ -50,15 +50,15 @@ func loadCPUHandler(w http.ResponseWriter, r *http.Request) {
 func loadMemoryHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Handling request to " + r.URL.RequestURI())
 
-	s := make([]int, 8*1024*1024)
+	s := make([]int, 64*1024*1024)
 	for i := 0; i < len(s); i++ {
 		s[i] = i
 	}
 
 	fmt.Printf("Finished allocating %d bytes of memory\n", len(s)*strconv.IntSize)
-	time.Sleep(time.Minute * 5)
+	time.Sleep(time.Minute * 30)
 
-	message := fmt.Sprintf("Finished consuming %d bytes of memory for 5 minutes", len(s)*strconv.IntSize)
+	message := fmt.Sprintf("Finished consuming %d bytes of memory for 30 minutes", len(s)*strconv.IntSize)
 	w.Write([]byte(message))
 }
 
