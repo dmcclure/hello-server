@@ -5,10 +5,13 @@ import (
 	"net/http"
 	"os"
 	"runtime"
-	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
+
+var memoryHog [][]uint8
+var mutex = &sync.Mutex{}
 
 func healthHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("OK"))
@@ -50,15 +53,14 @@ func loadCPUHandler(w http.ResponseWriter, r *http.Request) {
 func loadMemoryHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Handling request to " + r.URL.RequestURI())
 
-	s := make([]int, 32*1024*1024)
-	for i := 0; i < len(s); i++ {
-		s[i] = i
+	// Add a large slice to the global "memoryHog" slice of slices
+	mutex.Lock()
+	memoryHog = append(memoryHog, make([]uint8, 512*1024*1024))
+	for i := 0; i < len(memoryHog[len(memoryHog)-1]); i++ {
+		memoryHog[len(memoryHog)-1][i] = uint8(i % 255)
 	}
-
-	fmt.Printf("Finished allocating %d bytes of memory\n", len(s)*strconv.IntSize)
-	time.Sleep(time.Minute * 30)
-
-	message := fmt.Sprintf("Finished consuming %d bytes of memory for 30 minutes", len(s)*strconv.IntSize)
+	message := fmt.Sprintf("Finished consuming %d bytes of memory", len(memoryHog[len(memoryHog)-1]))
+	mutex.Unlock()
 	w.Write([]byte(message))
 }
 
