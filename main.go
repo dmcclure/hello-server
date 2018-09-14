@@ -55,7 +55,7 @@ func loadMemoryHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Add a large slice to the global "memoryHog" slice of slices
 	mutex.Lock()
-	memoryHog = append(memoryHog, make([]uint8, 512*1024*1024))
+	memoryHog = append(memoryHog, make([]uint8, 64*1024*1024))
 	for i := 0; i < len(memoryHog[len(memoryHog)-1]); i++ {
 		memoryHog[len(memoryHog)-1][i] = uint8(i % 255)
 	}
