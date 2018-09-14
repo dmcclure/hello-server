@@ -50,7 +50,7 @@ func loadCPUHandler(w http.ResponseWriter, r *http.Request) {
 func loadMemoryHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Handling request to " + r.URL.RequestURI())
 
-	s := make([]int, 64*1024*1024)
+	s := make([]int, 32*1024*1024)
 	for i := 0; i < len(s); i++ {
 		s[i] = i
 	}
