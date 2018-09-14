@@ -49,4 +49,5 @@
 ## Setting up infrastructure in a secondary AWS region
 
 The following steps will setup a regional instance of `hello-server` in a non-primary AWS region (for example, sa-east-1 or eu-west-1).
+
 * TBD

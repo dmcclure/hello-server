@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"runtime"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -22,7 +23,7 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(message))
 }
 
-func loadHandler(w http.ResponseWriter, r *http.Request) {
+func loadCPUHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Handling request to " + r.URL.RequestURI())
 
 	done := make(chan int)
@@ -46,10 +47,26 @@ func loadHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(message))
 }
 
+func loadMemoryHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Handling request to " + r.URL.RequestURI())
+
+	s := make([]int, 8*1024*1024)
+	for i := 0; i < len(s); i++ {
+		s[i] = i
+	}
+
+	fmt.Printf("Finished allocating %d bytes of memory\n", len(s)*strconv.IntSize)
+	time.Sleep(time.Minute * 5)
+
+	message := fmt.Sprintf("Finished consuming %d bytes of memory for 5 minutes", len(s)*strconv.IntSize)
+	w.Write([]byte(message))
+}
+
 func main() {
 	http.HandleFunc("/health", healthHandler)
 	http.HandleFunc("/hello/", helloHandler)
-	http.HandleFunc("/load", loadHandler)
+	http.HandleFunc("/load/cpu", loadCPUHandler)
+	http.HandleFunc("/load/memory", loadMemoryHandler)
 
 	fmt.Println("hello-server starting. IMAGE_TAG=" + os.Getenv("IMAGE_TAG") + " ENV_NAME=" + os.Getenv("ENV_NAME") + " BUILD_DATE=" + os.Getenv("BUILD_DATE"))
 
