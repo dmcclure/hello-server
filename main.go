@@ -8,7 +8,7 @@ import (
 )
 
 func sayHelloHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Handling a request to " + r.URL.RequestURI())
+	fmt.Println("Handling request to " + r.URL.RequestURI())
 
 	message := r.URL.Path
 	message = strings.TrimPrefix(message, "/")
