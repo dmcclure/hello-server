@@ -21,8 +21,9 @@ phases:
   build:
     commands:
       - echo Build started on `date`
+      - echo Branch is $BRANCH_NAME
       - echo Building the Docker image...
-      - docker build -t $REPOSITORY_URI:$IMAGE_TAG -t $REPOSITORY_URI:$BRANCH_NAME --build-arg IMAGE_TAG=${IMAGE_TAG} --build-arg BUILD_DATE="`date`" .
+      - docker build -t $REPOSITORY_URI:$IMAGE_TAG -t $BRANCH_NAME --build-arg IMAGE_TAG=${IMAGE_TAG} --build-arg BUILD_DATE="`date`" .
   post_build:
     commands:
       - ok && echo Build completed on `date`
