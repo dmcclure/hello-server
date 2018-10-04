@@ -82,9 +82,9 @@ resource "aws_ecr_lifecycle_policy" "ecr_lifecycle_policy" {
 EOF
 }
 
-resource "aws_codebuild_project" "app" {
-  name = "hello-server"
-  description = "Builds a hello-server Docker image and uploads it to ECR"
+resource "aws_codebuild_project" "test" {
+  name = "hello-server-test"
+  description = "Builds a hello-server Docker image for the test environment and uploads it to ECR"
   build_timeout = "30"
   service_role = "${aws_iam_role.codebuild.arn}"
 
@@ -97,6 +97,38 @@ resource "aws_codebuild_project" "app" {
     image = "aws/codebuild/golang:1.10"
     type = "LINUX_CONTAINER"
     privileged_mode = true
+
+    environment_variable {
+      "name"  = "BRANCH_NAME"
+      "value" = "test"
+    }
+  }
+
+  source {
+    type = "CODEPIPELINE"
+  }
+}
+
+resource "aws_codebuild_project" "master" {
+  name = "hello-server-master"
+  description = "Builds a hello-server Docker image for the staging and production environments and uploads it to ECR"
+  build_timeout = "30"
+  service_role = "${aws_iam_role.codebuild.arn}"
+
+  artifacts {
+    type = "CODEPIPELINE"
+  }
+
+  environment {
+    compute_type = "BUILD_GENERAL1_SMALL"
+    image = "aws/codebuild/golang:1.10"
+    type = "LINUX_CONTAINER"
+    privileged_mode = true
+
+    environment_variable {
+      "name"  = "BRANCH_NAME"
+      "value" = "master"
+    }
   }
 
   source {
