@@ -1,7 +1,7 @@
 # These CloudTrail trails are used to monitor S3 buckets that will trigger the
 # hello-server-test-manual and hello-server-master-manual CodePipelines.
 resource "aws_s3_bucket" "cloudtrail_test" {
-  bucket = "hello-server-test-manual-build"
+  bucket = "hello-server-test-manual-build-cloudtrail-logs"
   acl    = "private"
   policy = <<POLICY
 {
@@ -14,7 +14,7 @@ resource "aws_s3_bucket" "cloudtrail_test" {
               "Service": "cloudtrail.amazonaws.com"
             },
             "Action": "s3:GetBucketAcl",
-            "Resource": "arn:aws:s3:::hello-server-test-manual-build"
+            "Resource": "arn:aws:s3:::hello-server-test-manual-build-cloudtrail-logs"
         },
         {
             "Sid": "AWSCloudTrailWrite",
@@ -23,7 +23,7 @@ resource "aws_s3_bucket" "cloudtrail_test" {
               "Service": "cloudtrail.amazonaws.com"
             },
             "Action": "s3:PutObject",
-            "Resource": "arn:aws:s3:::hello-server-test-manual-build/*",
+            "Resource": "arn:aws:s3:::hello-server-test-manual-build-cloudtrail-logs/*",
             "Condition": {
                 "StringEquals": {
                     "s3:x-amz-acl": "bucket-owner-full-control"
@@ -36,7 +36,7 @@ POLICY
 }
 
 resource "aws_cloudtrail" "test_manual" {
-  name                          = "hello-server-test-manual-build-events"
+  name                          = "hello-server-test-trigger-manual-build-events"
   s3_bucket_name                = "${aws_s3_bucket.cloudtrail_test.id}"
 #   s3_key_prefix                 = "cloudtrail-events"
 #   include_global_service_events = true

@@ -141,7 +141,7 @@ resource "aws_s3_bucket" "codepipeline_artifacts_test_manual" {
 # look like:
 # [{"name":"hello-server","imageUri":"960785399995.dkr.ecr.us-west-2.amazonaws.com/hello-server:test-8cac639"}]
 resource "aws_s3_bucket" "codepipeline_test_manual" {
-  bucket = "hello-server-codepipeline-test-manual-build"
+  bucket = "hello-server-test-trigger-manual-build"
   acl    = "private"
 
   versioning {
