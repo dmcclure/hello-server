@@ -135,7 +135,11 @@ resource "aws_s3_bucket" "codepipeline_artifacts_test_manual" {
   acl    = "private"
 }
 
-# Writing an ECR image tag to this bucket will trigger the hello-server-test-manual CodePipeline
+# Writing an ECR image tag to this bucket will trigger the hello-server-test-manual CodePipeline.
+# An imagedefinitions.json file containing the image definition needs to be zipped into
+# imagedefinitions.zip and uploaded to the bucket. The imagedefinitions.json file's contents should
+# look like:
+# [{"name":"hello-server","imageUri":"960785399995.dkr.ecr.us-west-2.amazonaws.com/hello-server:test-8cac639"}]
 resource "aws_s3_bucket" "codepipeline_test_manual" {
   bucket = "hello-server-codepipeline-test-manual-build"
   acl    = "private"
@@ -144,8 +148,6 @@ resource "aws_s3_bucket" "codepipeline_test_manual" {
     enabled = true
   }
 }
-
-# [ ] Need to create a CloudWatch Events Rule that will trigger the pipeline.
 
 # This CodePipeline is used to push a particular existing ECR image to the test cluster.
 # It is triggered when an ECR image definition is written to image-to-deploy.zip in the
@@ -173,8 +175,7 @@ resource "aws_codepipeline" "test_manual" {
       configuration {
         S3Bucket             = "${aws_s3_bucket.codepipeline_test_manual.bucket}"
         PollForSourceChanges = "false"
-        # S3ObjectKey          = "image-to-deploy.zip"
-        S3ObjectKey          = "imagedefinitions.json"
+        S3ObjectKey          = "imagedefinitions.zip"
       }
     }
   }

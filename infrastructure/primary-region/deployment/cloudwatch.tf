@@ -50,7 +50,7 @@ resource "aws_cloudwatch_event_rule" "manual-test-deploy" {
     "eventSource": ["s3.amazonaws.com"],
     "eventName": ["PutObject", "CompleteMultiPartUpload"],
     "resources": {
-      "ARN": ["${aws_s3_bucket.codepipeline_test_manual.arn}/imagedefinitions.json"]
+      "ARN": ["${aws_s3_bucket.codepipeline_test_manual.arn}/imagedefinitions.zip"]
     }
   }
 }

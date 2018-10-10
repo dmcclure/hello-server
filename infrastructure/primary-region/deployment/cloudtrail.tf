@@ -49,7 +49,7 @@ resource "aws_cloudtrail" "test_manual" {
       type   = "AWS::S3::Object"
       # Make sure to append a trailing '/' to your ARN if you want
       # to monitor all objects in a bucket.
-      values = ["${aws_s3_bucket.codepipeline_test_manual.arn}/imagedefinitions.json"]
+      values = ["${aws_s3_bucket.codepipeline_test_manual.arn}/imagedefinitions.zip"]
     }
   }
 }
