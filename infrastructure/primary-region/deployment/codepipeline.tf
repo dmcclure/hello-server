@@ -58,17 +58,17 @@ data "aws_ssm_parameter" "github_token" {
   name = "/hello-server/github_token"
 }
 
-resource "aws_s3_bucket" "codepipeline_artifacts_test" {
-    bucket = "hello-server-codepipeline-artifacts-test"
-    acl    = "private"
+resource "aws_s3_bucket" "codepipeline_artifacts_test_auto" {
+  bucket = "hello-server-codepipeline-artifacts-test-auto"
+  acl    = "private"
 }
 
-resource "aws_codepipeline" "test" {
-  name = "hello-server-test"
+resource "aws_codepipeline" "test_auto" {
+  name = "hello-server-test-auto"
   role_arn = "${aws_iam_role.codepipeline_role.arn}"
 
   artifact_store {
-    location = "${aws_s3_bucket.codepipeline_artifacts_test.bucket}"
+    location = "${aws_s3_bucket.codepipeline_artifacts_test_auto.bucket}"
     type = "S3"
   }
 
@@ -106,6 +106,76 @@ resource "aws_codepipeline" "test" {
 
       configuration {
         ProjectName = "hello-server-test"
+      }
+    }
+  }
+
+  stage {
+    name = "Deploy"
+
+    action {
+      name            = "deploy"
+      category        = "Deploy"
+      owner           = "AWS"
+      provider        = "ECS"
+      input_artifacts = ["image-definition"]
+      version         = "1"
+
+      configuration {
+        ClusterName = "hello-server-test"
+        ServiceName = "hello-server-test"
+        FileName    = "imagedefinitions.json"
+      }
+    }
+  }
+}
+
+resource "aws_s3_bucket" "codepipeline_artifacts_test_manual" {
+  bucket = "hello-server-codepipeline-artifacts-test-manual"
+  acl    = "private"
+}
+
+# Writing an ECR image tag to this bucket will trigger the hello-server-test-manual CodePipeline.
+# An imagedefinitions.json file containing the image definition needs to be zipped into
+# imagedefinitions.zip and uploaded to the bucket. The imagedefinitions.json file's contents should
+# look like:
+# [{"name":"hello-server","imageUri":"960785399995.dkr.ecr.us-west-2.amazonaws.com/hello-server:test-8cac639"}]
+resource "aws_s3_bucket" "codepipeline_test_manual" {
+  bucket = "hello-server-test-trigger-manual-build"
+  acl    = "private"
+
+  versioning {
+    enabled = true
+  }
+}
+
+# This CodePipeline is used to push a particular existing ECR image to the test cluster.
+# It is triggered when an ECR image definition is written to image-to-deploy.zip in the
+# "hello-server-codepipeline-test-manual" S3 bucket.
+resource "aws_codepipeline" "test_manual" {
+  name = "hello-server-test-manual"
+  role_arn = "${aws_iam_role.codepipeline_role.arn}"
+
+  artifact_store {
+    location = "${aws_s3_bucket.codepipeline_artifacts_test_manual.bucket}"
+    type = "S3"
+  }
+
+  stage {
+    name = "Source"
+
+    action {
+      name             = "s3-bucket-updated"
+      category         = "Source"
+      owner            = "AWS"
+      provider         = "S3"
+      version          = "1"
+      output_artifacts = ["image-definition"]
+
+      configuration {
+        S3Bucket             = "${aws_s3_bucket.codepipeline_test_manual.bucket}"
+        PollForSourceChanges = "false"
+        S3ObjectKey          = "imagedefinitions.zip"
       }
     }
   }
