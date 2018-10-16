@@ -63,6 +63,7 @@ resource "aws_s3_bucket" "codepipeline_artifacts_test_auto" {
   acl    = "private"
 }
 
+# This CodePipeline will automatically deploy code pushed to a "test" branch to the test environment
 resource "aws_codepipeline" "test_auto" {
   name = "hello-server-test-auto"
   role_arn = "${aws_iam_role.codepipeline_role.arn}"
@@ -205,6 +206,9 @@ resource "aws_s3_bucket" "codepipeline_artifacts_master" {
     acl    = "private"
 }
 
+# This CodePipeline will automatically deploy code pushed to a "master" branch to the staging environment.
+# If deploying to the staging environment was successful, an approval step will wait for approval to
+# deploy to the production environment.
 resource "aws_codepipeline" "master" {
   name = "hello-server-master"
   role_arn = "${aws_iam_role.codepipeline_role.arn}"
